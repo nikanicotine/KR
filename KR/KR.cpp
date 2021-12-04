@@ -1,5 +1,6 @@
 
 #include "pch.h"
+#include "Header.h"
 #include <stdio.h>
 #include <conio.h>
 #include <string.h>
@@ -9,148 +10,208 @@
 #include <locale.h>
 
 
-int a, b, n, i, j, ne = 1;
-int visited[10] = { 0 }, min, cost[10][10];
-
-void main_menu_pos(char* passive[], char* active[], int amount, int selected) {
-	for (int i = 0; i < selected; i++) {
-		printf("————————————\n");
-		printf("%s\n", passive[i]);
-		printf("————————————\n");
-	}
-	printf("————————————\n");
-	printf("%s\n", active[selected]);
-	printf("————————————\n");
-
-	for (int i = selected + 1; i < amount; i++) {
-		printf("————————————\n");
-		printf("%s\n", passive[i]);
-		printf("————————————\n");
-	}
-}
-int main()
-{
+int main() {
 	setlocale(0, "RUS");
-	int way[20] = { 0 };
-	int index = 0, amount = 4;
-	char* passive[4];
-	char* active[4];
+
 	for (int i = 0; i < amount; i++) {
 		passive[i] = (char*)malloc(sizeof(char) * 50);
 		active[i] = (char*)malloc(sizeof(char) * 50);
 	}
 
-	strcpy(passive[0], "блен");
-	strcpy(passive[1], "блин");
-	strcpy(passive[2], "бля");
-	strcpy(passive[3], "блять");
+	strcpy(passive[0], "   ||        Чтение графа из файла        ||");
+	strcpy(passive[1], "   ||          Ручной ввод графа          ||");
+	strcpy(passive[2], "   ||          Генерация матрицы          ||");
+	strcpy(passive[3], "   ||         Выполнение алгоритма        ||");
+	strcpy(passive[4], "   ||    Сохранение результатов в файл    ||");
+	strcpy(passive[5], "   ||                Выход                ||");
 
-	strcpy(active[0], "хуй");
-	strcpy(active[1], "пизда");
-	strcpy(active[2], "сковорода");
-	strcpy(active[3], "а что сюда?");
-
+	strcpy(active[0],  "   ||      — ЧТЕНИЕ ГРАФА ИЗ ФАЙЛА —      ||");
+	strcpy(active[1],  "   ||        — РУЧНОЙ ВВОД ГРАФА —        ||");
+	strcpy(active[2],  "   ||        — ГЕНЕРАЦИЯ МАТРИЦЫ —        ||");
+	strcpy(active[3],  "   ||       — ВЫПОЛНЕНИЕ АЛГОРИТМА —      ||");
+	strcpy(active[4],  "   ||  — СОХРАНЕНИЕ РЕЗУЛЬТАТОВ В ФАЙЛ —  ||");
+	strcpy(active[5],  "   ||              — ВЫХОД —              ||");
 	//MENU
-	printf("\n   Нажмите 1, чтобы ввести матрицу веса с клавиатуры\n");
-	printf("   Нажмите 2, чтобы случайно сгенерировать матрицу\n   ");
-	scanf_s("%d", &i);
-	if (i == 1) {
-		printf("   Введите кол-во вершин: \n");
-		scanf_s("%d", &n);
-		printf("   Введите матрицу веса:  \n");
 
-		for (i = 1; i <= n; i++) {
-			for (j = 1; j <= n; j++) {
-				scanf_s("%d", &cost[i][j]);
+	while (i!=amount) {
+		i = menu(i);
+
+		switch (i) {
+		case 0: {
+			system("cls");
+			openfile(arr, n);
+			printf("   Файл успешно открыт!\n");
+			system("pause");
+			break; 
+		}
+		case 1: {
+			system("cls");
+			printf("   Введите количество вершин: \n");
+			scanf_s("%d", &n);
+			arr = (int**)malloc(n * sizeof(int));
+			for (int i = 0; i < n; i++) {
+				arr[i] = (int*)malloc(n * sizeof(int));
+			}
+			printf("   Заполните матрицу! \n   ");
+
+			for (i = 1; i <= n; i++) {
+				for (j = 1; j <= n; j++) {
+					scanf_s("%d", &arr[i][j]);
+				}
+				printf("\n   ");
+			}
+			for (i = 1; i <= n; i++) {
+				for (j = 1; j <= n; j++) {
+					if (arr[i][j] != 0 && i == j) {
+						printf("   Содержится 0 на главной диагонали\n");
+						system("pause");
+						break;
+					}
+					if (arr[i][j] < 0) {
+						printf("   Ребро отрицательного веса\n");
+						system("pause");
+						break;
+					}
+					if (arr[i][j] != arr[j][i]) {
+						printf("   Матрица несимметрична относительно главной диагонали\n");
+						system("pause");
+						break;
+					}
+				}
+			}
+			break;
+		}
+		case 2: {
+			system("cls");
+			srand(time(NULL));
+			printf("\n   Введите количество вершин: ");
+			scanf_s("%d", &n);
+			arr = (int**)malloc(n * sizeof(int));
+			for (int i = 0; i < n; i++) {
+				arr[i] = (int*)malloc(n * sizeof(int));
 			}
 			printf("\n");
-		}
-		for (i = 1; i <= n; i++) {
-			for (j = 1; j <= n; j++) {
-				if (cost[i][j] != 0 && i == j) {
-					printf("   Содержится 0 на главной диагонали");
-					//getch();
-					exit(0);
-				}
-				if (cost[i][j] < 0) {
-					printf("   Ребро отрицательного веса");
-					//getch();
-					exit(0);
-				}
-				if (cost[i][j] != cost[j][i]) {
-					printf("   Матрица несимметрична относительно главной диагонали");
-					//getch();
-					exit(0);
+			for (i = 0; i < n; i++) {
+				for (j = 0; j < n; j++)
+					arr[i][j] = rand() % 10;
+			}
+			for (i = 0; i < n; i++) {
+				for (j = 0; j < n; j++) {
+					arr[i][j] = arr[j][i];
+					if (i == j)
+						arr[i][j] = 0;
 				}
 			}
-		}
-	}
-	if (i == 2) {
-		srand(time(NULL));
-		printf("   Введите количество вершин: ");
-		scanf_s("%d", &n);
-		printf("\n");
-		for (i = 1; i <= n; i++) {
-			for (j = 1; j <= n; j++)
-				cost[i][j] = rand() % 10;
-		}
-		for (i = 1; i <= n; i++) {
-			for (j = 1; j <= n; j++) {
-				cost[i][j] = cost[j][i];
-				if (i == j)
-					cost[i][j] = 0;
-			}
-		}
-		for (i = 1; i <= n; i++) {
-			printf("  ");
-			for (j = 1; j <= n; j++) {
-				printf("%2d", cost[i][j]);
+			for (i = 0; i < n; i++) {
+				printf("  ");
+				for (j = 0; j < n; j++) {
+					printf("%2d", arr[i][j]);
+				}
+				printf("\n");
 			}
 			printf("\n");
+			system("pause");
+			break;
 		}
-	}
+		case 3: {
+			system("cls");
+			if (arr == NULL) {
+				printf("\n   Граф не был создан!\n");
+				system("pause");
+				break;
+			}
 
-	//
+			printf("\n");
+			for (i = 0; i < n; i++) {
+				printf("  ");
+				for (j = 0; j < n; j++) {
+					printf("%2d", arr[i][j]);
+				}
+				printf("\n");
+			}
 
-	visited[1] = 1;
+			visited = (int*)calloc(n, sizeof(int));
 
-	int sum=0;
+			if (way != NULL)
+				free(way);
+			way = (int*)malloc((n) * sizeof(int));
+			
+			visited[0] = 1;
+			way[0] = 0;
+			vis_n = 1;
+			while (vis_n < n)
+			{
+				min = INT_MAX;
+				for (i = 0; i < n; i++)
+					for (j = i + 1; j < n; j++)
+						if (arr[i][j] < min && arr[i][j] != 0 && visited[i] != 0)
+						{
+							min = arr[i][j];
+							a = i;
+							b = j;
+						}
 
-	while (ne < n)
-	{
-		min = INT_MAX;
-		for (i = 1; i <= n; i++)
-			for (j = i+1; j <= n; j++)
-				if (cost[i][j] < min && cost[i][j] != 0 && visited[i] != 0)
+				if (visited[b] == 0)  // если вершина не посещалась то 
 				{
-					min = cost[i][j];
-					a = i;
-					b = j;
+					way[vis_n] = b;  //запись номера вершины
+					vis_n++;
+					visited[b] = 1;  //отметить как посещенную
 				}
+				arr[a][b] = arr[b][a] = 0;  // обнуление проверенных вершин
+			}
 
-		if (visited[b] == 0)  // если вершина не посещалась то 
-		{
-			way[index] = b;  //запись номера вершины
-			index++; // смещаем позицию для записи
-			ne++;
-			visited[b] = 1;  //отметить как посещенную
-			sum += min;
+			printf("\n   ");
+
+			for (int i = 0; i < n; i++)
+			{
+				printf("%d ", way[i]);
+				if (i < n - 1)
+					printf("—> ");
+			}
+			printf("\n");
+			free(visited);
+			system("pause");
+			break;
+		}
+		case 4: {
+			system("cls");
+			if (arr == NULL) {
+				printf("\n   Граф не был создан!\n");
+				break;
+			}
+
+			if (way == NULL) {
+				printf("\n   Остовное дерево не было создано!\n");
+				break;
+			}
+			char filename[260];
+			FILE* file;
+
+			printf("\n   Введите имя файла: ");
+			scanf("%s", filename);
+			strcat(filename, ".txt");
+			file = fopen(filename, "w");
+			for (i = 0; i < n; i++) {
+				for (j = 0; j < n; j++) {
+					fprintf(file, "%2d", arr[i][j]);
+				}
+				fprintf(file, "\n");
+			}
+
+			for (int i = 0; i < n; i++)
+			{
+				fprintf(file, " %d ", way[i]);
+				if (i < n - 1)
+					fprintf(file, "—>");
+			}
+
+			fclose(file);
+			printf("   Данные успешно сохранены!\n");
+			system("pause");
+			break;
+		}
+		case 5: exit(0);
 
 		}
-		cost[a][b] = cost[b][a] = 0;  // обнуление проверенных вершин
 	}
-
-
-	printf("\n");
-
-	printf("   1 —> ");
-	for (int i = 0; i < n - 1; i++)
-	{
-		printf("%d ", way[i]);
-		if (i < n - 2)
-			printf("—> ");
-	}
-	printf(" %d", sum);
-
-	//getch();
 }
