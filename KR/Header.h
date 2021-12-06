@@ -49,8 +49,8 @@ int openfile(int** arr, int n) {
 	strcat(filename, ".txt");
 	file = fopen(filename, "r");
 	if (file == NULL) {
-		printf("\n   Файла с таким именем не существует!\n");
-		system("pause");
+		printf("   Файла с таким именем не существует!\n");
+		system("pause"); 
 		return n;
 	}
 	while (fgetc(file) != '\n') {

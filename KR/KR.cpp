@@ -37,43 +37,43 @@ int main() {
 		i = menu(i);
 
 		switch (i) {
-		case 0: {
+		case 0: { // чтение
 			system("cls");
 			openfile(arr, n);
 			printf("   Файл успешно открыт!\n");
 			system("pause");
 			break; 
 		}
-		case 1: {
+		case 1: { // ручной
 			system("cls");
-			printf("   Введите количество вершин: \n");
+			printf("   Введите количество вершин: ");
 			scanf_s("%d", &n);
 			arr = (int**)malloc(n * sizeof(int));
 			for (int i = 0; i < n; i++) {
 				arr[i] = (int*)malloc(n * sizeof(int));
 			}
-			printf("   Заполните матрицу! \n   ");
+			printf("\n   Заполните матрицу! \n   ");
 
-			for (i = 1; i <= n; i++) {
-				for (j = 1; j <= n; j++) {
+			for (i = 0; i < n; i++) {
+				for (j = 0; j < n; j++) {
 					scanf_s("%d", &arr[i][j]);
 				}
-				printf("\n   ");
+				printf("   ");
 			}
-			for (i = 1; i <= n; i++) {
-				for (j = 1; j <= n; j++) {
+			for (i = 0; i < n; i++) {
+				for (j = 0; j < n; j++) {
 					if (arr[i][j] != 0 && i == j) {
-						printf("   Содержится 0 на главной диагонали\n");
+						printf("   Содержится 0 на главной диагонали\n   ");
 						system("pause");
 						break;
 					}
 					if (arr[i][j] < 0) {
-						printf("   Ребро отрицательного веса\n");
+						printf("   Ребро отрицательного веса\n   ");
 						system("pause");
 						break;
 					}
 					if (arr[i][j] != arr[j][i]) {
-						printf("   Матрица несимметрична относительно главной диагонали\n");
+						printf("   Матрица несимметрична относительно главной диагонали\n   ");
 						system("pause");
 						break;
 					}
@@ -81,7 +81,7 @@ int main() {
 			}
 			break;
 		}
-		case 2: {
+		case 2: { // генерация 
 			system("cls");
 			srand(time(NULL));
 			printf("\n   Введите количество вершин: ");
@@ -113,10 +113,10 @@ int main() {
 			system("pause");
 			break;
 		}
-		case 3: {
+		case 3: { //алгоритм
 			system("cls");
 			if (arr == NULL) {
-				printf("\n   Граф не был создан!\n");
+				printf("\n   Граф не был создан!\n   ");
 				system("pause");
 				break;
 			}
@@ -144,7 +144,7 @@ int main() {
 				min = INT_MAX;
 				for (i = 0; i < n; i++)
 					for (j = i + 1; j < n; j++)
-						if (arr[i][j] < min && arr[i][j] != 0 && visited[i] != 0)
+						if (arr[i][j] < min && arr[i][j] != 0 && visited[j] == 0 && visited[i] != 0)
 						{
 							min = arr[i][j];
 							a = i;
@@ -157,7 +157,7 @@ int main() {
 					vis_n++;
 					visited[b] = 1;  //отметить как посещенную
 				}
-				arr[a][b] = arr[b][a] = 0;  // обнуление проверенных вершин
+
 			}
 
 			printf("\n   ");
@@ -173,15 +173,17 @@ int main() {
 			system("pause");
 			break;
 		}
-		case 4: {
+		case 4: { // сохранение
 			system("cls");
 			if (arr == NULL) {
-				printf("\n   Граф не был создан!\n");
+				printf("\n   Граф не был создан!\n   ");
+				system("pause");
 				break;
 			}
 
 			if (way == NULL) {
-				printf("\n   Остовное дерево не было создано!\n");
+				printf("\n   Остовное дерево не было создано!\n   ");
+				system("pause");
 				break;
 			}
 			char filename[260];
@@ -191,22 +193,24 @@ int main() {
 			scanf("%s", filename);
 			strcat(filename, ".txt");
 			file = fopen(filename, "w");
+			fprintf(file, "Матрица:\n");
 			for (i = 0; i < n; i++) {
 				for (j = 0; j < n; j++) {
-					fprintf(file, "%2d", arr[i][j]);
+					fprintf(file, "%d ", arr[i][j]);
 				}
 				fprintf(file, "\n");
 			}
 
+			fprintf(file, "Минимальное остовное дерево:\n");
 			for (int i = 0; i < n; i++)
 			{
-				fprintf(file, " %d ", way[i]);
+				fprintf(file, "%d ", way[i]);
 				if (i < n - 1)
-					fprintf(file, "—>");
+					fprintf(file, "—> ");
 			}
 
 			fclose(file);
-			printf("   Данные успешно сохранены!\n");
+			printf("   Данные успешно сохранены!\n   ");
 			system("pause");
 			break;
 		}
