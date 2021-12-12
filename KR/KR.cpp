@@ -1,5 +1,3 @@
-
-#include "pch.h"
 #include "Header.h"
 #include <stdio.h>
 #include <conio.h>
@@ -8,7 +6,6 @@
 #include <time.h>
 #include <stdlib.h>
 #include <locale.h>
-
 
 int main() {
 	setlocale(0, "RUS");
@@ -25,24 +22,22 @@ int main() {
 	strcpy(passive[4], "   ||    Сохранение результатов в файл    ||");
 	strcpy(passive[5], "   ||                Выход                ||");
 
-	strcpy(active[0],  "   ||      — ЧТЕНИЕ ГРАФА ИЗ ФАЙЛА —      ||");
-	strcpy(active[1],  "   ||        — РУЧНОЙ ВВОД ГРАФА —        ||");
-	strcpy(active[2],  "   ||        — ГЕНЕРАЦИЯ МАТРИЦЫ —        ||");
-	strcpy(active[3],  "   ||       — ВЫПОЛНЕНИЕ АЛГОРИТМА —      ||");
-	strcpy(active[4],  "   ||  — СОХРАНЕНИЕ РЕЗУЛЬТАТОВ В ФАЙЛ —  ||");
-	strcpy(active[5],  "   ||              — ВЫХОД —              ||");
+	strcpy(active[0], "   ||      — ЧТЕНИЕ ГРАФА ИЗ ФАЙЛА —      ||");
+	strcpy(active[1], "   ||        — РУЧНОЙ ВВОД ГРАФА —        ||");
+	strcpy(active[2], "   ||        — ГЕНЕРАЦИЯ МАТРИЦЫ —        ||");
+	strcpy(active[3], "   ||       — ВЫПОЛНЕНИЕ АЛГОРИТМА —      ||");
+	strcpy(active[4], "   ||  — СОХРАНЕНИЕ РЕЗУЛЬТАТОВ В ФАЙЛ —  ||");
+	strcpy(active[5], "   ||              — ВЫХОД —              ||");
 	//MENU
 
-	while (i!=amount) {
+	while (i != amount) {
 		i = menu(i);
 
 		switch (i) {
 		case 0: { // чтение
 			system("cls");
-			openfile(arr, n);
-			printf("   Файл успешно открыт!\n");
-			system("pause");
-			break; 
+			arr = openfile(arr);
+			break;
 		}
 		case 1: { // ручной
 			system("cls");
@@ -79,6 +74,7 @@ int main() {
 					}
 				}
 			}
+			system("pause");
 			break;
 		}
 		case 2: { // генерация 
@@ -91,25 +87,25 @@ int main() {
 				arr[i] = (int*)malloc(n * sizeof(int));
 			}
 			printf("\n");
-			for (i = 0; i < n; i++) {
-				for (j = 0; j < n; j++)
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++)
 					arr[i][j] = rand() % 10;
 			}
-			for (i = 0; i < n; i++) {
-				for (j = 0; j < n; j++) {
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
 					arr[i][j] = arr[j][i];
 					if (i == j)
 						arr[i][j] = 0;
 				}
 			}
-			for (i = 0; i < n; i++) {
+			for (int i = 0; i < n; i++) {
 				printf("  ");
-				for (j = 0; j < n; j++) {
+				for (int j = 0; j < n; j++) {
 					printf("%2d", arr[i][j]);
 				}
 				printf("\n");
 			}
-			printf("\n");
+			printf("\n   ");
 			system("pause");
 			break;
 		}
@@ -121,7 +117,7 @@ int main() {
 				break;
 			}
 
-			printf("\n");
+			printf("\n   Матрица:\n");
 			for (i = 0; i < n; i++) {
 				printf("  ");
 				for (j = 0; j < n; j++) {
@@ -135,15 +131,26 @@ int main() {
 			if (way != NULL)
 				free(way);
 			way = (int*)malloc((n) * sizeof(int));
-			
+
 			visited[0] = 1;
 			way[0] = 0;
 			vis_n = 1;
-			while (vis_n < n)
+			int sum;
+			tn = n;
+			for (int i = 0; i < n; i++) {
+				sum = 0;
+				for (int j = 0; j < n; j++) {
+					sum += arr[i][j];
+				}
+				if (sum == 0)
+					tn--;
+			}
+
+			while (vis_n < tn)
 			{
 				min = INT_MAX;
 				for (i = 0; i < n; i++)
-					for (j = i + 1; j < n; j++)
+					for (j = 0; j < n; j++)
 						if (arr[i][j] < min && arr[i][j] != 0 && visited[j] == 0 && visited[i] != 0)
 						{
 							min = arr[i][j];
@@ -151,24 +158,20 @@ int main() {
 							b = j;
 						}
 
-				if (visited[b] == 0)  // если вершина не посещалась то 
-				{
-					way[vis_n] = b;  //запись номера вершины
+				if (visited[b] == 0) {  // если вершина не посещалась то
+					way[vis_n] = b;		//запись номера вершины
 					vis_n++;
-					visited[b] = 1;  //отметить как посещенную
+					visited[b] = 1;		//отметить как посещенную
 				}
-
 			}
-
-			printf("\n   ");
-
-			for (int i = 0; i < n; i++)
-			{
+			
+			printf("\n   Минимальное остновное дерево:\n   ");
+			for (int i = 0; i < tn; i++) {
 				printf("%d ", way[i]);
-				if (i < n - 1)
+				if (i < tn - 1)
 					printf("—> ");
 			}
-			printf("\n");
+			printf("\n   ");
 			free(visited);
 			system("pause");
 			break;
@@ -202,10 +205,10 @@ int main() {
 			}
 
 			fprintf(file, "Минимальное остовное дерево:\n");
-			for (int i = 0; i < n; i++)
+			for (int i = 0; i < tn; i++)
 			{
 				fprintf(file, "%d ", way[i]);
-				if (i < n - 1)
+				if (i < tn - 1)
 					fprintf(file, "—> ");
 			}
 
@@ -215,7 +218,6 @@ int main() {
 			break;
 		}
 		case 5: exit(0);
-
 		}
 	}
 }
