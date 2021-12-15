@@ -10,6 +10,8 @@
 int main() {
 	setlocale(0, "RUS");
 
+	int i = 0;
+
 	for (int i = 0; i < amount; i++) {
 		passive[i] = (char*)malloc(sizeof(char) * 50);
 		active[i] = (char*)malloc(sizeof(char) * 50);
@@ -47,39 +49,54 @@ int main() {
 			for (int i = 0; i < n; i++) {
 				arr[i] = (int*)malloc(n * sizeof(int));
 			}
-			printf("\n   Заполните матрицу! \n   ");
+			printf("   Заполните матрицу! \n   ");
 
-			for (i = 0; i < n; i++) {
-				for (j = 0; j < n; j++) {
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
 					scanf_s("%d", &arr[i][j]);
 				}
 				printf("   ");
 			}
-			for (i = 0; i < n; i++) {
-				for (j = 0; j < n; j++) {
+			err = 0;
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
 					if (arr[i][j] != 0 && i == j) {
-						printf("   Содержится 0 на главной диагонали\n   ");
+						printf("Ошибка! Не содержится 0 на главной диагонали\n   ");
+						err = 1;
 						system("pause");
 						break;
 					}
 					if (arr[i][j] < 0) {
-						printf("   Ребро отрицательного веса\n   ");
+						printf("Ошибка! Ребро отрицательного веса\n   ");
+						err = 1;
 						system("pause");
 						break;
 					}
 					if (arr[i][j] != arr[j][i]) {
-						printf("   Матрица несимметрична относительно главной диагонали\n   ");
+						printf("Ошибка! Матрица несимметрична относительно главной диагонали\n   ");
+						err = 1;
 						system("pause");
 						break;
 					}
 				}
+				if (err == 1) {
+					for (int i = 0; i < n; i++)
+						free(arr[i]);
+						free(arr);
+						arr = NULL;
+						break;
+				}
 			}
-			system("pause");
 			break;
 		}
 		case 2: { // генерация 
 			system("cls");
 			srand(time(NULL));
+			if (arr != NULL) {
+				for (int i = 0; i < n; i++)
+					free(arr[i]);
+				free(arr);
+			}
 			printf("\n   Введите количество вершин: ");
 			scanf_s("%d", &n);
 			arr = (int**)malloc(n * sizeof(int));
@@ -88,16 +105,19 @@ int main() {
 			}
 			printf("\n");
 			for (int i = 0; i < n; i++) {
-				for (int j = 0; j < n; j++)
+				arr[i][i] = 0;
+				for (int j = i + 1; j < n; j++) {
 					arr[i][j] = rand() % 10;
+					arr[j][i] = arr[i][j];
+				}
 			}
-			for (int i = 0; i < n; i++) {
+			/*for (int i = 0; i < n; i++) {
 				for (int j = 0; j < n; j++) {
-					arr[i][j] = arr[j][i];
+
 					if (i == j)
 						arr[i][j] = 0;
 				}
-			}
+			}*/
 			for (int i = 0; i < n; i++) {
 				printf("  ");
 				for (int j = 0; j < n; j++) {
@@ -118,9 +138,9 @@ int main() {
 			}
 
 			printf("\n   Матрица:\n");
-			for (i = 0; i < n; i++) {
+			for (int i = 0; i < n; i++) {
 				printf("  ");
-				for (j = 0; j < n; j++) {
+				for (int j = 0; j < n; j++) {
 					printf("%2d", arr[i][j]);
 				}
 				printf("\n");
@@ -164,7 +184,7 @@ int main() {
 					visited[b] = 1;		//отметить как посещенную
 				}
 			}
-			
+
 			printf("\n   Минимальное остновное дерево:\n   ");
 			for (int i = 0; i < tn; i++) {
 				printf("%d ", way[i]);
@@ -197,8 +217,8 @@ int main() {
 			strcat(filename, ".txt");
 			file = fopen(filename, "w");
 			fprintf(file, "Матрица:\n");
-			for (i = 0; i < n; i++) {
-				for (j = 0; j < n; j++) {
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
 					fprintf(file, "%d ", arr[i][j]);
 				}
 				fprintf(file, "\n");

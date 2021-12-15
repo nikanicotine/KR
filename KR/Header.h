@@ -11,7 +11,7 @@ int* way = NULL;
 int* visited = NULL;
 int** arr = NULL;
 int amount = 6;
-int min, a, b, i, j, vis_n, tn, n;
+int min, a, b, j, vis_n, tn, n, err = 0;
 char* passive[6];
 char* active[6];
 
@@ -51,12 +51,13 @@ int** openfile(int** arr) {
 		system("pause");
 		return arr;
 	}
-	 do {
-		fscanf(file, "%d");
+	int temp;
+	do {
+		fscanf(file, "%d", &temp);
 		n++;
-	 } while (fgetc(file) != '\n');
+	} while (fgetc(file) != '\n');
 
-	 fseek(file, 0, SEEK_SET);
+	fseek(file, 0, SEEK_SET);
 
 	arr = (int**)malloc(n * sizeof(int));
 	for (int i = 0; i < n; i++) {
@@ -70,9 +71,9 @@ int** openfile(int** arr) {
 	}
 	fclose(file);
 	printf("   Матрица из файла успешно считана!\n");
-	for (i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) {
 		printf("  ");
-		for (j = 0; j < n; j++) {
+		for (int j = 0; j < n; j++) {
 			printf("%2d", arr[i][j]);
 		}
 		printf("\n");
